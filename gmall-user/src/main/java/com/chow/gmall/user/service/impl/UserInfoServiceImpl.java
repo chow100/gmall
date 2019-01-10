@@ -1,10 +1,10 @@
 package com.chow.gmall.user.service.impl;
 
-import com.chow.gmall.user.bean.UserInfo;
+import com.alibaba.dubbo.config.annotation.Service;
+import com.chow.gmall.bean.UserInfo;
+import com.chow.gmall.service.UserInfoService;
 import com.chow.gmall.user.mapper.UserInfoMapper;
-import com.chow.gmall.user.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
