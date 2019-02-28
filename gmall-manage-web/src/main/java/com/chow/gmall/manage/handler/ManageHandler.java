@@ -19,4 +19,10 @@ public class ManageHandler {
         return "attrListPage";
     }
 
+    @RequestMapping("spuListPage")
+    public String spuInfoPage(){
+
+        return "spuListPage";
+    }
+
 }

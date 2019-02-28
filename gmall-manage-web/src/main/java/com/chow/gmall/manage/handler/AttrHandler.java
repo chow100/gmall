@@ -27,6 +27,15 @@ public class AttrHandler {
         return baseCatalog1s;
     }
 
+    @RequestMapping("saveAttr")
+    @ResponseBody
+    public String saveAttr(BaseAttrInfo baseAttrInfo){
+
+        attrService.saveAttr(baseAttrInfo);
+
+        return "success";
+    }
+
     @RequestMapping("getCatalog2")
     @ResponseBody
     public List<BaseCatalog2> getCatalog2s(String catalog1Id){

@@ -17,7 +17,7 @@ public class BaseAttrValue implements Serializable {
     private String valueName;
     @Column
     private String attrId;
-    @Column
+    @Transient
     private String isEnabled;
 
     @Transient

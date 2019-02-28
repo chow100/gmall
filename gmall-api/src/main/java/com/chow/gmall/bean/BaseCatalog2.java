@@ -1,10 +1,8 @@
 package com.chow.gmall.bean;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @param
@@ -19,6 +17,11 @@ public class BaseCatalog2 implements Serializable {
     private String name;
     @Column
     private String catalog1Id;
+
+    @Transient
+    List<BaseCatalog3> baseCatalog3s;
+
+
 
     public String getId() {
         return id;
@@ -43,4 +46,13 @@ public class BaseCatalog2 implements Serializable {
     public void setCatalog1Id(String catalog1Id) {
         this.catalog1Id = catalog1Id;
     }
+
+    public List<BaseCatalog3> getBaseCatalog3s() {
+        return baseCatalog3s;
+    }
+
+    public void setBaseCatalog3s(List<BaseCatalog3> baseCatalog3s) {
+        this.baseCatalog3s = baseCatalog3s;
+    }
+
 }

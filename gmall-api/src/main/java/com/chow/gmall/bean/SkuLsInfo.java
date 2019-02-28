@@ -91,4 +91,19 @@ public class SkuLsInfo implements Serializable {
     public void setSkuAttrValueList(List<SkuLsAttrValue> skuAttrValueList) {
         this.skuAttrValueList = skuAttrValueList;
     }
+
+
+    @Override
+    public String toString() {
+        return "SkuLsInfo{" +
+                "id='" + id + '\'' +
+                ", price=" + price +
+                ", skuName='" + skuName + '\'' +
+                ", skuDesc='" + skuDesc + '\'' +
+                ", catalog3Id='" + catalog3Id + '\'' +
+                ", skuDefaultImg='" + skuDefaultImg + '\'' +
+                ", hotScore=" + hotScore +
+                ", skuAttrValueList=" + skuAttrValueList +
+                '}';
+    }
 }

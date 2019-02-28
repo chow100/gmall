@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chow.gmall.user.mapper.UserInfoMapper">
-    <!--<select id="selectUserInfoAll" resultType="com.chow.gmall.user.bean.UserInfo">
+    <!--<select id="selectUserInfoAll" resultType="com.atguiguigu.gmall.user.bean.UserInfo">
         select * from user_info;
     </select>-->
 </mapper>

@@ -19,5 +19,10 @@ public class SkuLsAttrValue implements Serializable {
         this.valueId = valueId;
     }
 
-
+    @Override
+    public String toString() {
+        return "SkuLsAttrValue{" +
+                "valueId='" + valueId + '\'' +
+                '}';
+    }
 }

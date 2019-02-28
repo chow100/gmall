@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="sku_dlg" class="easyui-dialog" title="编辑sku" style="width:700px;height:520px;"
+         closed="true"  data-options="iconCls:'icon-save',resizable:true,modal:false" buttons="#skuBtns" >
+        <form id="skuForm">
+            <br/>
+            <label>sku名称:</label>
+            <input  id="skuName" name="skuName" class="easyui-textbox" data-options="" style="width:300px;"/>
+            <br/><br/>
+            <label>商品价格:</label>
+            <input  id="price" name="price" class="easyui-numberbox" data-options="min:0,precision:2" style="width:300px;"/>
+            <br/><br/>
+            <label>商品重量（千克):</label>
+            <input  id="weight" name="weight" class="easyui-numberbox" data-options="min:0,precision:2" style="width:300px;"/>
+            <br/><br/>
+            <label>商品规格描述:</label>
+            <input  id="skuDesc" name="skuDesc" class="easyui-textbox" data-options="multiline:true" style="width:500px;height:100px"/>
+            <input id="spuIdForSku" name="spuId" type="hidden"/>
+
+            <input id="skuId" name="id" type="hidden"/>
+
+            <input id="catalog3IdForSku" name="catalog3Id" type="hidden"/>
+            <br/><br/>
+
+            <input id="skuInfo" name="skuInfo" type="hidden"/>
+
+
+            <div id="attrInfoGroup"  title="平台属性" class="easyui-panel" style="padding:5px;" >
+            </div>
+
+            <div id="spuSaleAttrGroup" title="销售属性" class="easyui-panel" style="padding:5px;" ></div>
+
+            <!----------------商品图片列表 ----------------------->
+
+            <table id="skuImgDg" class="easyui-datagrid" title="商品图片列表"
+                   data-options="singleSelect:false,selectOnCheck:false,method:'get'" ></table>
+
+            <br/><br/>
+            <!-------------->
+        </form>
+    </div>
+    <!----------------弹出框的按钮组----------------------->
+    <div id="skuBtns">
+        <a href="javascript:saveSku()" class="easyui-linkbutton">保 存</a>
+        <a href="javascript:closeSku()" class="easyui-linkbutton">关 闭</a>
+    </div>
+
+    <script language="JavaScript">
+
+        // 平台属性
+        function initAttrInfoGroup(catalog3Id) {
+            $.post("getAttrList",{catalog3Id:catalog3Id},function (attrs) {
+                $("#attrInfoGroup").empty();
+                $(attrs).each(function (i,attr) {
+                    var spanBegin = "<span attrId='"+attr.id+"'>";
+                    var attrName = attr.attrName;
+                    var spanEnd = "</span> ";
+
+                    var selectBegin = "<select>";
+                    var attrValueList = attr.attrValueList;
+                    var options = "";
+                    $(attrValueList).each(function (j,attrValue) {
+                        var optionBegin = "<option value='"+attrValue.id+"'>";
+                        var valueName = attrValue.valueName;
+                        var optionEnd = "</option>";
+
+                        options = options + optionBegin + valueName + optionEnd;
+                    });
+                    var selectEnd = "</select>";
+
+                    $("#attrInfoGroup").append(spanBegin + attrName + "：" + selectBegin + options + selectEnd + spanEnd);
+                })
+            });
+        }
+
+        // 销售属性
+        function initSpuSaleAttrGroup(spuId) {
+
+            $.post("spuSaleAttrList",{spuId:spuId},function (spuSaleAttrs) {
+                $("#spuSaleAttrGroup").empty();
+                $(spuSaleAttrs).each(function (i,spuSaleAttr) {
+                    var spanBegin = "<span spuSaleAttrId='"+spuSaleAttr.saleAttrId+"' spuSaleAttrName='"+spuSaleAttr.saleAttrName+"'>";
+                    var saleAttrName = spuSaleAttr.saleAttrName;
+                    var spanEnd = "</span> ";
+
+                    var selectBegin = "<select>";
+                    var spuSaleAttrValueList = spuSaleAttr.spuSaleAttrValueList;
+                    var options = "";
+                    $(spuSaleAttrValueList).each(function (j,spuSaleAttrValue) {
+                        var optionBegin = "<option value='"+spuSaleAttrValue.id+"'>";
+                        var saleAttrValueName = spuSaleAttrValue.saleAttrValueName;
+                        var optionEnd = "</option>";
+
+                        options = options + optionBegin + saleAttrValueName + optionEnd;
+                    });
+                    var selectEnd = "</select>";
+
+                    $("#spuSaleAttrGroup").append(spanBegin + saleAttrName +"："+ selectBegin + options + selectEnd + spanEnd);
+                })
+            });
+        }
+
+        // 商品图片列表
+        function initSkuImgListDatagrid(spuId) {
+            $("#skuImgDg").datagrid({
+                url:'spuImageList?spuId='+spuId,
+                columns:[[
+                    { field:'checkFlag',checkbox:true},
+                    { field:'id',title:'文件编号',width:'15%'},//隐藏文件页面内部编号
+                    { field:'imgName',title:'图片简称',width:'30%'},
+                    { field:'imgUrl',title:'图片路径' ,width:'20%',
+                        formatter: function(value,row,index){
+                            return "<img src='"+value+"' style='width:100px;height:100px;'/>"
+                        }
+                    },
+                    { field:'isDefault',title:'是否默认图片' ,width:'20%',
+                        formatter: function (value,row,index) {
+                            var url = row.imgUrl;
+                            return "<input type='radio' name='isDefault' value='"+url+"' />";
+                        }
+                    }
+                ]]
+            });
+        }
+
+        function saveSku() {
+            var skuJson = {};
+
+            var spuId = $("#spulist_dg").datagrid("getSelected").id;
+
+            var catalog3Id = $("#ctg3ForSpuList").combobox("getValue");
+            if (!catalog3Id) {
+                catalog3Id = '1';
+            }
+
+            skuJson["spuId"] = spuId;
+            skuJson["price"] = $("#price").numberbox("getValue");
+            skuJson["skuName"] = $("#skuName").numberbox("getValue");
+            skuJson["weight"] = $("#weight").textbox("getValue");
+            skuJson["skuDesc"] = $("#skuDesc").textbox("getValue");
+            skuJson["catalog3Id"] = catalog3Id;
+
+            // 平台属性
+            var attrSpans = $("#attrInfoGroup").children("span");
+            $(attrSpans).each(function (i, attr) {
+                var attrId = $(attr).attr("attrId");
+//                var valueId = $(attrSpans).children("select").prop("value");
+                skuJson["skuAttrValueList[" + i + "].attrId"] = attrId;
+                skuJson["skuAttrValueList[" + i + "].valueId"] = $(attr).children("select").prop("value");
+            });
+
+
+            // 销售属性
+            var saleSpans = $("#spuSaleAttrGroup").children("span");
+            $(saleSpans).each(function (i, spuSaleAttr) {
+                var saleAttrId = $(spuSaleAttr).attr("spuSaleAttrId");
+                var saleAttrName = $(spuSaleAttr).attr("spuSaleAttrName");
+                skuJson["skuSaleAttrValueList[" + i + "].saleAttrId"] = saleAttrId;
+                skuJson["skuSaleAttrValueList[" + i + "].saleAttrName"] = saleAttrName;
+
+                var saleAttrValueId = $(spuSaleAttr).children("select").val();
+                var saleAttrValueName = $(spuSaleAttr).children("select").find("option:selected").text();
+                skuJson["skuSaleAttrValueList[" + i + "].saleAttrValueId"] = saleAttrValueId;
+                skuJson["skuSaleAttrValueList[" + i + "].saleAttrValueName"] = saleAttrValueName;
+
+            });
+
+            // 商品图片列表
+            var skuImgs = $("#skuImgDg").datagrid("getChecked");
+            var defaultImg = $("input[name='isDefault']:checked").val();
+            if (!defaultImg) {
+                defaultImg = $(skuImgs)[0].imgUrl;
+            }
+            skuJson["skuDefaultImg"] = defaultImg;
+
+            $(skuImgs).each(function (i, skuImag) {
+                skuJson["skuImageList[" + i + "].imgName"] = skuImag.imgName;
+                skuJson["skuImageList[" + i + "].imgUrl"] = skuImag.imgUrl;
+                skuJson["skuImageList[" + i + "].spuImgId"] = skuImag.id;
+                if (skuImag.imgUrl == defaultImg) {
+                    skuJson["skuImageList[" + i + "].isDefault"] = '1';
+                }
+            });
+
+            $.post("saveSku", skuJson, function (data) {
+                alert(data);
+                closeSku();
+            });
+        }
+
+        // 关闭
+        function closeSku() {
+            $("#sku_dlg").dialog("close");
+        }
+
+
+
+    </script>
+
+</body>
+</html>

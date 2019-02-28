@@ -1,7 +1,5 @@
 package com.chow.gmall.bean;
 
-import com.chow.gmall.bean.enums.PaymentWay;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -39,7 +37,7 @@ public class OrderInfo implements Serializable {
     private String userId;
 
     @Column
-    private PaymentWay paymentWay;
+    private String paymentWay;
 
     @Column
     private Date expireTime;
@@ -144,11 +142,11 @@ public class OrderInfo implements Serializable {
         this.userId = userId;
     }
 
-    public PaymentWay getPaymentWay() {
+    public String getPaymentWay() {
         return paymentWay;
     }
 
-    public void setPaymentWay(PaymentWay paymentWay) {
+    public void setPaymentWay(String paymentWay) {
         this.paymentWay = paymentWay;
     }
 

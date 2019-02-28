@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chow.gmall.manage.mapper.SpuSaleAttrMapper">
+    <select id="selectSpuSaleAttrListCheckBySku" resultMap="selectSpuSaleAttrListCheckBySkuMap">
+        SELECT
+            ssa.id AS arrt_id,ssa.*,
+            ssav.id AS value_id,ssav.*,
+            IF (skv.id, 1, 0) AS isChecked
+        FROM spu_sale_attr ssa
+        INNER JOIN spu_sale_attr_value ssav
+        ON ssa.`spu_id` = ssav.`spu_id`
+        AND ssa.`sale_attr_id` = ssav.`sale_attr_id`
+        AND ssa.spu_id = #{spuId}
+        LEFT JOIN sku_sale_attr_value skv
+        ON ssav.sale_attr_value_name = skv.sale_attr_value_name
+        AND skv.sku_id = #{skuId}
+    </select>
+    <resultMap id="selectSpuSaleAttrListCheckBySkuMap" type="com.chow.gmall.bean.SpuSaleAttr" autoMapping="true">
+        <result property="id" column="arrt_id"></result>
+        <collection property="spuSaleAttrValueList" ofType="com.chow.gmall.bean.SpuSaleAttrValue" autoMapping="true">
+            <result property="id" column="value_id"></result>
+        </collection>
+    </resultMap>
+
+</mapper>

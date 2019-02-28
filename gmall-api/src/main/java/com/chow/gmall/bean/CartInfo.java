@@ -107,5 +107,7 @@ public class CartInfo implements Serializable {
     public void setIsChecked(String isChecked) {
         this.isChecked = isChecked;
     }
+
+    
 }
 
